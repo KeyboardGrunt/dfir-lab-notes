@@ -1,0 +1,33 @@
+## Today's date 2025-05-11
+
+I'm starting with a training exercise to get the training wheels off: https://www.malware-traffic-analysis.net/2025/01/22/index.html
+
+The background is that a coworker has downloaded a suspicious file after searching for Google Authenticator.
+
+### The tasks for this pcap are as follows:
+- What is the IP address of the infected Windows client?
+- What is the mac address of the infected Windows client?
+- What is the host name of the infected Windows client?
+- What is the user account name from the infected Windows client?
+- What is the likely domain name for the fake Google Authenticator page?
+- What are the IP addresses used for C2 servers for this infection?
+
+Opening the file the first thing I do is check Export Objects to see what files may have been recorded. I notice a teamviewer download from 10.1.17.215 to 5.252.153[.]241. Based on the Unit42 post on LinkedIn that followed this training exercise confirms that the destination address is in fact the C2 server. We seem to have skipped ahead a bit. This does indicate that the source IP is the infected Windows host. But let's keep digging to confirm it.
+
+When digging through the TCP streams I found a name "shutchenson" on stream 7. It seems quite likely to be a user account name since it's communication from the likely infected host.
+
+As one of the first packets of the pcap we can see that the likely victim host 10.1.17.215 announces itself as DESKTOP-L8C5GSJ. It doesn't take much digging to find the MAC address of the likely victim host in the packets themselves.
+
+After looking for the earliest http traffic involving the C2 server which we easily identified, I was able to go back through recent TCP streams for the website the user went to. The website was google-authenticator.burleson-appliance[.]net and posed as a Google Authenticator page.
+
+### Suspected victim client:
+- Victim IP: 10.1.17.215 
+- Victim MAC: 00:d0:b7:26:4a:74
+- Victim host name: DESKTOP-L8C5GSJ
+- Victim user account name: shutchenson
+
+- Domain name for fake authenticator: google-authenticator.burleson-appliance[.]net
+
+- IP for C2 server: 5.252.153[.]241
+
+All in all, a pretty straightforward phishing attack, easily identifiable through packet analysis. I recognize that this is deliberately made simple because it's a training exercise. The real traffic might have been encrypted under normal circumstances, and perhaps multiple C2 destinations would have been used.
