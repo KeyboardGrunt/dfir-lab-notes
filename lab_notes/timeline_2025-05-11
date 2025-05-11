@@ -18,7 +18,7 @@ When digging through the TCP streams I found a name "shutchenson" on stream 7. I
 
 As one of the first packets of the pcap we can see that the likely victim host 10.1.17.215 announces itself as DESKTOP-L8C5GSJ. It doesn't take much digging to find the MAC address of the likely victim host in the packets themselves.
 
-After looking for the earliest http traffic involving the C2 server which we easily identified, I was able to go back through recent TCP streams for the website the user went to. The website was google-authenticator.burleson-appliance[.]net and posed as a Google Authenticator page.
+After looking for the earliest http traffic involving the C2 server which we easily identified, I was able to go back through recent TCP streams for the website the user went to. The website was google-authenticator.burleson-appliance[.]net and posed as a Google Authenticator page. One TCP stream back a second address was found to be authenticatoor[.]org
 
 ### Suspected victim client:
 - Victim IP: 10.1.17.215 
@@ -27,7 +27,13 @@ After looking for the earliest http traffic involving the C2 server which we eas
 - Victim user account name: shutchenson
 
 - Domain name for fake authenticator: google-authenticator.burleson-appliance[.]net
+authenticatoor[.]org
 
 - IP for C2 server: 5.252.153[.]241
 
 All in all, a pretty straightforward phishing attack, easily identifiable through packet analysis. I recognize that this is deliberately made simple because it's a training exercise. The real traffic might have been encrypted under normal circumstances, and perhaps multiple C2 destinations would have been used.
+
+Update:
+Upon checking the answers I found out that multiple C2 destinations were indeed used, and that I missed one of the fake authenticator domains. I also discovered a few scripts in the packets that I noticed the first time around, but didn't dig into. PE-files, obfuscated scripts, etc.
+
+As for the additional C2 servers I could find them in the pcap but I couldn't find a reasonable link between them and the attack as the data was encrypted and didn't stick out enough in my eyes.
